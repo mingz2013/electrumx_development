@@ -1,0 +1,39 @@
+version: '3.7'
+
+networks:
+  my_network:
+    name: my_network
+    #    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.50.0.0/16
+
+services:
+  base:
+    build: .
+    image: "mingz.me/mingz2013/electrumx"
+    container_name: "electrumx"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+      - /etc/electrumx.conf:/etc/electrumx.conf
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
+    networks:
+      - my_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    privileged: true
+    ports:
+      - "50001:50001"
+      - "50002:50002"
+      - "50003:50003"
+      - "50004:50004"
+
+
